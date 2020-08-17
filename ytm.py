@@ -86,9 +86,10 @@ urls=[]
 
 args(sys.argv, urls)
 editpath(path)
-pathlist1 = dirlist(path)
 
 download_youtubedl()
+
+pathlist1 = dirlist(path)
 
 for x in urls:
     if "playlist" in x or "channel" in x:
