@@ -47,12 +47,17 @@ def dirlist(path):
             
 def convertToMp3(fileName):  
     if os.name == "nt":
-        print("ffmpeg.exe -i " + '"' + fileName +  '" ' + '"' + str.lower(fileName[:str.rfind(fileName,".")]) + '.mp3"')
-        os.system("ffmpeg.exe -i " + '"' + fileName +  '" ' + '"' + str.lower(fileName[:str.rfind(fileName,".")]) + '.mp3"') 
+        os.system("ffmpeg.exe -i " + '"' + fileName +  '" ' + '"' + fileName[:str.rfind(fileName,".")] + '.mp3"')
     else:
-        print("ffmpeg -i " + '"' + fileName +  '" ' + '"' + str.lower(fileName[:str.rfind(fileName,".")]) + '.mp3"')
-        os.system("ffmpeg -i " + '"' + fileName +  '" ' + '"' + str.lower(fileName[:str.rfind(fileName,".")]) + '.mp3"')
+        os.system("ffmpeg -i " + '"' + fileName +  '" ' + '"' + fileName[:str.rfind(fileName,".")] + '.mp3"')
 
+def lconvertToMp3(fileName):  
+    if os.name == "nt":
+        os.system("ffmpeg.exe -i " + '"' + fileName +  '" ' + '"' + fileName[:str.rfind(fileName,"/")] + str.lower(fileName[str.rfind(fileName,"/"):str.rfind(fileName,".")]) + '.mp3"') 
+    else:
+        os.system("ffmpeg -i " + '"' + fileName +  '" ' + '"' + fileName[:str.rfind(fileName,"/")] + str.lower(fileName[str.rfind(fileName,"/"):str.rfind(fileName,".")]) + '.mp3"')
+
+    
 def checkffmpeg(path):
     if os.name == "nt":
         if not(os.path.exists(path + "ffmpeg.exe")):
@@ -61,6 +66,7 @@ def checkffmpeg(path):
 def args(args, urls):
     global convert
     global delorig
+    global lowreg
     for x in args:
         if "http" in x:
             if "&" in x:
@@ -74,10 +80,12 @@ def args(args, urls):
             convert = x[str.find(x, "=")+1:]
         if "-delorig=" in x:
             delorig = x[str.find(x, "=")+1:]
-            
+        if "-lowreg=" in x:
+            lowreg = x[str.find(x, "=")+1:]
 
 convert="T"
 delorig="T"
+lowreg="F"
 path=""
 pathlist=[]
 pathlist1=[]
@@ -110,7 +118,10 @@ if convert=="T":
     checkffmpeg(path)
     for x in pathlist:
         print(x)
-        convertToMp3(x)
+        if lowreg=="T":
+            lconvertToMp3(x)
+        else:
+            convertToMp3(x)
         
 for z in pathlist:
     z.replace("$20", " ")
